@@ -48,7 +48,7 @@ const Cadastrar_Usuario = () => {
                 {...register("cliente_cpf")}
               />
             </div>
-            <div className="form-group">
+            {/* <div className="form-group">
               <label htmlFor="telefone_numero">Telefone:</label>
               <input
                 type="text"
@@ -58,7 +58,7 @@ const Cadastrar_Usuario = () => {
                 autoFocus
                 {...register("telefone_numero")}
               />
-            </div>
+            </div> */}
             <div className="form-group mt-2">
               <label htmlFor="cliente_email">Email:</label>
               <input

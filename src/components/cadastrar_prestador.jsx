@@ -88,8 +88,8 @@ const Cadastrar_prestador = () => {
                   type="text"
                   className="form-control"
                   id="prestador_razaoSocial"
-                  required
-                  {...register("prestador_razaoSocial")}
+                  //required
+                  //{...register("prestador_razaoSocial")}
                 />
               </div>
             </div>
