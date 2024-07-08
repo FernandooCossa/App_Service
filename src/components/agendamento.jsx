@@ -33,6 +33,7 @@ const Agendamento = () => {
         try {
             const response = await api.get(`/prestador/search?servicoNome=${servicoNome}`);
             setPrestadores(response.data);
+            console.log("prestadores lista"+response.data);
             
         } catch (error) {
             console.error("Erro ao buscar prestadores por nome do serviço", error);
@@ -40,24 +41,29 @@ const Agendamento = () => {
     };
 
     const handleServicoChange = (event) => {
-        const servicoEncontrado = servicos.find(servico => servico.servico_id === parseInt(event.target.value, 10));        console.log("Servico encontrado:", servicoEncontrado); // Log do serviço encontrado
+        console.log("Event target value:", event.target.value);
+        console.log("Servicos array:", servicos); // Log do array servicos
+    
+         const servicoEncontrado = servicos.find(servico => servico.servico_id === parseInt(event.target.value, 10));        
+         console.log("Servico encontrado:", servicoEncontrado); // Log do serviço encontrado
     
         const servicoNome = servicoEncontrado?.servico_nome;
-
+        console.log("Servico Nome:", servicoNome);
     
-        setSelectedServicoNome(servicoNome);
-    
-        buscarPrestadoresPorNomeServico(servicoNome);
+        setSelectedServicoNome(event.target.value);
+        
+        buscarPrestadoresPorNomeServico(event.target.value);
     };
 
     const salvar = async (campos) => {
         try {
+            // Adiciona os campos agendamento_hora e agendamento_servico_id ao objeto campos
             const camposCompletos = {
                 ...campos,
                 agendamento_hora: selectedTime,
                 servicos:{servico_id: watch("servico_id")}
             };
-
+            console.log("Campos completos:", camposCompletos);
             const response = await api.post("agendamento", camposCompletos);
             setAviso("Agendamento realizado com sucesso!");
             reset();
@@ -101,8 +107,7 @@ const Agendamento = () => {
                             {...register("servico_id")}
                             defaultValue=""
                             onChange={handleServicoChange}
-                        >
-                            <option value="" disabled>Selecione um serviço</option>
+                        >  <option value="" disabled>Selecione um serviço</option>
                             {servicos.map(servico => (
                                 <option key={servico.servico_id} value={servico.servico_id}>{servico.servico_nome}</option>
                             ))}

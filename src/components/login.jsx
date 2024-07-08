@@ -1,28 +1,38 @@
 import { useState } from "react";
-import { useAuth } from './AuthProvider';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { api } from "../config_axios";
 import { Helmet } from "react-helmet";
+import useAuth from './useAuth'; // Ajuste o caminho conforme necessário
+import { useNavigate } from 'react-router-dom';
 
 const FormularioLogin = () => {
-    const [username, setUsername] = useState("");
-    const [senha, setSenha] = useState("");
-    const [lembrar, setLembrar] = useState(false); // Estado para lembrar-se de mim
+    const [email, setEmail] = useState("");
+    const [cliente_senha, setClienteSenha] = useState("");
     const [error, setError] = useState("");
     const { login } = useAuth();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (username.trim() === "" || senha.trim() === "") {
+    
+        if (email.trim() === "" || cliente_senha.trim() === "") {
             setError("Preencha todos os campos!");
             return;
         }
-
+    
         try {
-            const response = await api.post("/login", { username, senha });
+            const response = await fetch('http://localhost:8080/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, cliente_senha })
+            });
+    
             if (response.status === 200) {
-                login();
+                const data = await response.json();
+                localStorage.setItem('token', data.token);
+                login(); // Chama o método login do AuthProvider
+                navigate('/agendamento'); // Redireciona para a página de agendamentos
             } else {
                 setError("Usuário ou senha inválidos!");
             }
@@ -43,16 +53,12 @@ const FormularioLogin = () => {
                             <h2 className="mb-4">Faça o Login</h2>
                             <form onSubmit={handleSubmit}>
                                 <div className="form-outline mb-4">
-                                    <input type="text" id="username" className="form-control form-control-lg" value={username} onChange={(e) => setUsername(e.target.value)} />
+                                    <input type="text" id="username" className="form-control form-control-lg" value={email} onChange={(e) => setEmail(e.target.value)} />
                                     <label className="form-label" htmlFor="username">NOME DE USUÁRIO</label>
                                 </div>
                                 <div className="form-outline mb-4">
-                                    <input type="password" id="senha" className="form-control form-control-lg" value={senha} onChange={(e) => setSenha(e.target.value)} />
+                                    <input type="password" id="senha" className="form-control form-control-lg" value={cliente_senha} onChange={(e) => setClienteSenha(e.target.value)} />
                                     <label className="form-label" htmlFor="senha">SENHA</label>
-                                </div>
-                                <div className="form-check mb-3">
-                                    <input type="checkbox" className="form-check-input" id="lembrar" checked={lembrar} onChange={(e) => setLembrar(e.target.checked)} />
-                                    <label className="form-check-label" htmlFor="lembrar">Lembre-se de mim</label>
                                 </div>
                                 {error && <div className="alert alert-danger">{error}</div>}
                                 <div className="d-grid gap-2 col-12 mx-auto">
@@ -66,7 +72,6 @@ const FormularioLogin = () => {
                 </div>
                 <footer className="text-center mt-4">Todos os direitos reservados.</footer>
             </section>
-            
         </>
     );
 };
