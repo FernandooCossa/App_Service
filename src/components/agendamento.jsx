@@ -19,6 +19,7 @@ const Agendamento = () => {
             try {
                 const response = await api.get("/servicos");
                 setServicos(response.data);
+                console.log("lista de servicos 1:"+response.data);
             } catch (error) {
                 console.error("Erro ao buscar serviços", error);
             }
@@ -42,22 +43,27 @@ const Agendamento = () => {
 
     const handleServicoChange = (event) => {
         console.log("Event target value:", event.target.value);
-        console.log("Servicos array:", servicos); // Log do array servicos
-    
+            
          const servicoEncontrado = servicos.find(servico => servico.servico_id === parseInt(event.target.value, 10));        
          console.log("Servico encontrado:", servicoEncontrado); // Log do serviço encontrado
     
         const servicoNome = servicoEncontrado?.servico_nome;
         console.log("Servico Nome:", servicoNome);
     
-        setSelectedServicoNome(event.target.value);
+        setSelectedServicoNome(servicoNome);
         
-        buscarPrestadoresPorNomeServico(event.target.value);
+        buscarPrestadoresPorNomeServico(servicoNome);
     };
 
     const salvar = async (campos) => {
         try {
             // Adiciona os campos agendamento_hora e agendamento_servico_id ao objeto campos
+            const serviceNome = watch("servico_id")
+            console.log("servico nome:", serviceNome);
+            const servicoEncontrado = servicos.find(servico => servico.servico_nome === serviceNome);
+            const servicoId = servicoEncontrado?.servico_id;
+            console.log("servicos:", servicos);
+            console.log("servico id:", servicoId);
             const camposCompletos = {
                 ...campos,
                 agendamento_hora: selectedTime,
@@ -91,12 +97,12 @@ const Agendamento = () => {
                                 type="search"
                                 placeholder="Serviços"
                                 aria-label="Serviços"
-                                {...register("servicoNome")}
+                                {...register("servico_nome")}
                             />
                             <button
                                 className="btn btn-outline-success"
                                 type="button"
-                                onClick={() => buscarPrestadoresPorNomeServico(watch("servicoNome"))}
+                                onClick={() => buscarPrestadoresPorNomeServico(watch("servico_nome"))}
                             >
                                 Pesquisar
                             </button>
