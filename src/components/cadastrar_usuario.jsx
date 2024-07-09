@@ -60,13 +60,13 @@ const Cadastrar_Usuario = () => {
               />
             </div> */}
             <div className="form-group mt-2">
-              <label htmlFor="cliente_email">Email:</label>
+              <label htmlFor="email">Email:</label>
               <input
                 type="email"
                 className="form-control"
-                id="cliente_email"
+                id="email"
                 required
-                {...register("cliente_email")}
+                {...register("email")}
               />
             </div>
             <div className="form-group mt-2">
