@@ -2,16 +2,19 @@ import { useForm } from "react-hook-form";
 import { api } from "../config_axios";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
+import { useNavigate } from 'react-router-dom';
 
 const Cadastrar_Usuario = () => {
   const { register, handleSubmit, reset } = useForm();
   const [aviso, setAviso] = useState("");
+  const navigate = useNavigate();
 
   const salvar = async (campos) => {
     try {
       const response = await api.post("/cliente", campos);
       setAviso(`Usuário cadastrado com sucesso!"`);
       reset();
+      navigate("/login"); // Navegar para a tela de login após o cadastro
     } catch (error) {
       setAviso("Erro ao cadastrar usuário!");
     }
@@ -48,17 +51,6 @@ const Cadastrar_Usuario = () => {
                 {...register("cliente_cpf")}
               />
             </div>
-            {/* <div className="form-group">
-              <label htmlFor="telefone_numero">Telefone:</label>
-              <input
-                type="text"
-                className="form-control"
-                id="telefone_numero"
-                required
-                autoFocus
-                {...register("telefone_numero")}
-              />
-            </div> */}
             <div className="form-group mt-2">
               <label htmlFor="email">Email:</label>
               <input
